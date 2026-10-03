@@ -28,15 +28,22 @@ export function evaluatePermissionMode(
 ) {
   mode = normalizePermissionMode(mode);
   if (risk === "read") return { decision: "allow" as const, reason: "Read-only operation." };
+  if ((risk === "external" || risk === "destructive") && !explicitApproval) {
+    return {
+      decision: "ask" as const,
+      reason: "External and destructive actions always require approval for this specific action.",
+    };
+  }
   if (mode !== "ask_o1" && mode !== "ask_approval")
     return {
       decision: "allow" as const,
       reason: "Full access is active.",
     };
-  if (explicitApproval) return {
-    decision: "allow" as const,
-    reason: "Human approval supplied.",
-  };
+  if (explicitApproval)
+    return {
+      decision: "allow" as const,
+      reason: "Human approval supplied.",
+    };
   return {
     decision: "ask" as const,
     reason:

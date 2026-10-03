@@ -17,10 +17,28 @@ class MemoryStore {
       .filter(([key]) => key.startsWith(`${owner}:${collection}:`))
       .map(([, value]) => value as T);
   }
-  async insertIfAbsent<T extends { id: string }>(owner: string, collection: string, value: T): Promise<T | null> {
+  async insertIfAbsent<T extends { id: string }>(
+    owner: string,
+    collection: string,
+    value: T,
+  ): Promise<T | null> {
     const key = `${owner}:${collection}:${value.id}`;
     if (!this.values.has(key)) this.values.set(key, value);
     return this.values.get(key) as T;
+  }
+  async claimStatus<T>(
+    owner: string,
+    collection: string,
+    id: string,
+    expected: string,
+    next: string,
+  ): Promise<T | null> {
+    const key = `${owner}:${collection}:${id}`;
+    const value = this.values.get(key) as (T & { status?: string }) | undefined;
+    if (!value || value.status !== expected) return null;
+    const updated = { ...value, status: next } as T;
+    this.values.set(key, updated);
+    return updated;
   }
 }
 

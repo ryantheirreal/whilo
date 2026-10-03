@@ -68,6 +68,20 @@ export class Store {
     );
     return (result.rows[0]?.data as T | undefined) ?? null;
   }
+  async claimStatus<T>(
+    owner: string,
+    kind: string,
+    id: string,
+    expectedStatus: string,
+    nextStatus: string,
+  ): Promise<T | null> {
+    const result = await this.db.query(
+      "UPDATE records SET data=jsonb_set(data,'{status}',$5::jsonb),updated_at=now() WHERE owner=$1 AND kind=$2 AND id=$3 AND data->>'status'=$4 RETURNING data",
+      [owner, kind, id, expectedStatus, JSON.stringify(nextStatus)],
+    );
+    return (result.rows[0]?.data as T | undefined) ?? null;
+  }
+
   async scan<T>(kind: string): Promise<{ owner: string; value: T }[]> {
     const result = await this.db.query(
       "SELECT jsonb_build_object('owner',owner,'value',data) AS data FROM records WHERE kind=$1 ORDER BY updated_at ASC",
