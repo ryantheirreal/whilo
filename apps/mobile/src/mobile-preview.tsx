@@ -7,6 +7,7 @@ import {
   EllipsisVertical,
   Globe2,
   Mail,
+  Menu,
   Mic,
   Phone,
   Plus,
@@ -224,27 +225,35 @@ export function MobileChatPreview() {
             },
           ]}
         >
+          <Pressable onPress={() => setDrawer(true)} style={s.iconBox}>
+            <Menu size={20} color={colors.text} />
+          </Pressable>
           <Pressable
-            onPress={() => setDrawer(true)}
-            style={{
-              width: 38,
-              height: 38,
-              borderRadius: 19,
-              backgroundColor: agent.tone,
-              alignItems: "center",
-              justifyContent: "center",
-            }}
+            onPress={() => setAgentPicker(true)}
+            style={{ position: "absolute", left: 0, right: 0, alignItems: "center" }}
           >
-            <Mascot size={28} variant={agent.avatar} />
+            <View style={[s.row, { gap: 7 }]}>
+              <View
+                style={{
+                  width: 34,
+                  height: 34,
+                  borderRadius: 17,
+                  backgroundColor: agent.tone,
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Mascot size={25} variant={agent.avatar} />
+              </View>
+              <View style={{ alignItems: "center" }}>
+                <Text style={{ fontSize: 15, fontWeight: "800", color: colors.text }}>
+                  {agent.name}
+                </Text>
+                <Text style={{ fontSize: 10, color: "#43815E", fontWeight: "700" }}>● online</Text>
+              </View>
+            </View>
           </Pressable>
-          <Pressable onPress={() => setAgentPicker(true)} style={{ flex: 1 }}>
-            <Text style={{ fontSize: 16, fontWeight: "800", color: colors.text }}>
-              {agent.name}
-            </Text>
-            <Text style={{ fontSize: 11, color: "#43815E", fontWeight: "700" }}>
-              ● {agent.role} · online
-            </Text>
-          </Pressable>
+          <View style={{ flex: 1 }} />
           <Pressable onPress={() => setCall(true)} style={s.iconBox}>
             <Phone size={18} color={colors.blueDark} />
           </Pressable>

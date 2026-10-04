@@ -940,103 +940,117 @@ function ApprovalSheet({ close, approve }: { close: () => void; approve: () => v
 }
 
 function PreviewLogin({ onContinue }: { onContinue: () => void }) {
-  const [email, setEmail] = useState("you@example.com");
   return (
-    <View style={{ flex: 1, backgroundColor: "#EEF7FC", flexDirection: "row" }}>
+    <View style={{ flex: 1, backgroundColor: "#121212", overflow: "hidden" }}>
+      <FloatingBot color="#00D982" shape="cloud" style={{ top: 92, left: "32%" }} />
+      <FloatingBot color="#8B4DFF" style={{ top: 320, left: 50 }} />
+      <FloatingBot color="#FF20A6" style={{ top: 270, right: 108 }} />
+      <FloatingBot color="#FF9800" style={{ top: 570, left: -29 }} />
+      <FloatingBot color="#FF2454" style={{ top: 770, right: -30 }} />
+      <FloatingBot color="#1685FF" shape="square" style={{ top: 900, left: -18 }} />
+      <FloatingBot color="#00BDAF" style={{ top: 1030, right: 120 }} />
+      <FloatingBot color="#FF6B00" shape="hex" style={{ top: 1060, left: "27%" }} />
+      <FloatingBot color="#A8733D" style={{ top: 488, right: -35 }} />
       <View
         style={{
           flex: 1,
-          padding: 52,
+          alignItems: "center",
           justifyContent: "space-between",
-          backgroundColor: colors.blueDark,
+          paddingHorizontal: 30,
+          paddingTop: 92,
+          paddingBottom: 34,
         }}
       >
-        <View style={[s.row, { gap: 10 }]}>
-          <Mascot size={40} />
-          <Text style={{ color: "#FFF", fontSize: 22, fontWeight: "800" }}>Whilo</Text>
-        </View>
-        <View style={{ maxWidth: 560, gap: 18 }}>
+        <View style={{ alignItems: "center", marginTop: 370, gap: 12 }}>
+          <Text style={{ color: "#FFF", fontSize: 44, fontWeight: "700", letterSpacing: -1.4 }}>
+            Whilo
+          </Text>
           <Text
             style={{
-              color: "#FFF",
-              fontSize: 46,
-              lineHeight: 52,
-              fontWeight: "800",
-              letterSpacing: -2,
+              color: "#9A9A9D",
+              fontSize: 18,
+              lineHeight: 25,
+              textAlign: "center",
+              maxWidth: 300,
             }}
           >
-            A little more room to breathe.
+            Seu time de agentes sempre ativos que terminam o trabalho
           </Text>
-          <Text style={{ color: "#DCECF7", fontSize: 17, lineHeight: 26 }}>
-            Your personal agent for the decisions, details and next moves that keep life moving.
-          </Text>
-          <View style={[s.row, { gap: 18, flexWrap: "wrap" }]}>
-            <Text style={{ color: "#FFF", fontWeight: "700" }}>Inbox</Text>
-            <Text style={{ color: "#FFF", fontWeight: "700" }}>Trips</Text>
-            <Text style={{ color: "#FFF", fontWeight: "700" }}>Tasks</Text>
-            <Text style={{ color: "#FFF", fontWeight: "700" }}>Automations</Text>
-          </View>
         </View>
-        <Text style={{ color: "#DCECF7", fontSize: 12 }}>
-          Whilo Preview · Safe by default · No external action is executed
-        </Text>
-      </View>
-      <View style={{ width: 470, justifyContent: "center", padding: 42 }}>
-        <Card
-          style={{
-            padding: 30,
-            gap: 20,
-            backgroundColor: "#FFF",
-            shadowColor: "#000",
-            shadowOpacity: 0.08,
-            shadowRadius: 18,
-          }}
-        >
-          <View style={{ gap: 7 }}>
-            <Text
-              style={{ color: colors.blueDark, fontSize: 12, fontWeight: "800", letterSpacing: 1 }}
-            >
-              WELCOME BACK
-            </Text>
-            <Text
-              style={{ color: colors.text, fontSize: 29, fontWeight: "800", letterSpacing: -1 }}
-            >
-              Open your Whilo.
-            </Text>
-            <Text style={s.muted}>
-              Sign in to preview the workspace. This demo keeps everything local and safe.
-            </Text>
-          </View>
-          <View style={{ gap: 8 }}>
-            <Text style={s.label}>EMAIL</Text>
-            <TextInput
-              value={email}
-              onChangeText={setEmail}
-              autoCapitalize="none"
-              keyboardType="email-address"
-              style={{
-                borderWidth: 1,
-                borderColor: colors.line,
-                borderRadius: 12,
-                paddingHorizontal: 14,
-                paddingVertical: 13,
-                color: colors.text,
-              }}
-            />
-          </View>
-          <Button primary onPress={onContinue} icon={ArrowRight}>
-            Continue to Preview
-          </Button>
-          <Pressable onPress={onContinue} style={{ alignItems: "center", padding: 8 }}>
-            <Text style={[s.small, { color: colors.blueDark, fontWeight: "700" }]}>
-              Continue as demo user
+        <View style={{ width: "100%", maxWidth: 520, alignItems: "center", gap: 22 }}>
+          <Pressable
+            onPress={onContinue}
+            accessibilityRole="button"
+            accessibilityLabel="Entrar ou criar conta no Whilo"
+            style={({ pressed }) => ({
+              width: "100%",
+              minHeight: 58,
+              borderRadius: 32,
+              backgroundColor: "#FFF",
+              alignItems: "center",
+              justifyContent: "center",
+              opacity: pressed ? 0.8 : 1,
+            })}
+          >
+            <Text style={{ color: "#111", fontSize: 20, fontWeight: "700" }}>
+              Log In or Sign Up
             </Text>
           </Pressable>
-          <View style={[s.row, { gap: 8, justifyContent: "center" }]}>
-            <ShieldCheck size={14} color="#43815E" />
-            <Text style={s.small}>No card · no email sent · no booking made</Text>
-          </View>
-        </Card>
+          <Text style={{ color: "#666669", fontSize: 14, lineHeight: 20, textAlign: "center" }}>
+            Ao usar o Whilo, você também concorda com estes{" "}
+            <Text style={{ textDecorationLine: "underline" }}>Termos</Text>.
+          </Text>
+          <View style={{ width: 20, height: 20, backgroundColor: "#383838" }} />
+        </View>
+      </View>
+    </View>
+  );
+}
+
+function FloatingBot({
+  color,
+  shape = "circle",
+  style,
+}: {
+  color: string;
+  shape?: "circle" | "cloud" | "square" | "hex";
+  style: Record<string, number | string>;
+}) {
+  const radius = shape === "circle" ? 50 : shape === "square" ? 18 : 25;
+  return (
+    <View
+      pointerEvents="none"
+      style={[
+        {
+          position: "absolute",
+          width: 76,
+          height: 76,
+          borderRadius: radius,
+          backgroundColor: color,
+          alignItems: "center",
+          justifyContent: "center",
+          transform: shape === "hex" ? [{ rotate: "30deg" }] : undefined,
+        },
+        style,
+      ]}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          gap: 9,
+          transform: shape === "hex" ? [{ rotate: "-30deg" }] : undefined,
+        }}
+      >
+        <View style={{ width: 9, height: 25, borderRadius: 7, backgroundColor: "#111" }} />
+        <View
+          style={{
+            width: 9,
+            height: 25,
+            borderRadius: 7,
+            backgroundColor: "#111",
+            transform: [{ rotate: shape === "cloud" ? "-42deg" : "12deg" }],
+          }}
+        />
       </View>
     </View>
   );
