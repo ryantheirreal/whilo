@@ -1,8 +1,8 @@
 import { createHash, createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import type { Store } from "../db.ts";
 import { AppError } from "../errors.ts";
+import { type O1Risk, redactSecrets } from "./policy.ts";
 import { classifyFailure, decideRecovery } from "./recovery-engine.ts";
-import { redactSecrets, type O1Risk } from "./policy.ts";
 
 export type SPlusGrantStatus = "active" | "claimed" | "revoked" | "expired";
 export interface SPlusGrant {
