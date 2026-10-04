@@ -21,8 +21,9 @@ import {
   X,
 } from "lucide-react-native";
 import { useMemo, useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { Pressable, ScrollView, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { Button, Card, colors, Mascot, s } from "./ui";
+import { MobileChatPreview } from "./mobile-preview";
 
 type Tab = "overview" | "inbox" | "tasks" | "trips" | "automations";
 type Task = {
@@ -65,6 +66,7 @@ const nav: { id: Tab; label: string; icon: typeof Activity }[] = [
 
 export function PreviewApp() {
   const [signedIn, setSignedIn] = useState(false);
+  const { width } = useWindowDimensions();
   const [tab, setTab] = useState<Tab>("overview");
   const [tasks, setTasks] = useState(tasksSeed);
   const [search, setSearch] = useState("");
@@ -100,6 +102,7 @@ export function PreviewApp() {
     notify("Approved safely — queued for the connected workspace.");
   };
   if (!signedIn) return <PreviewLogin onContinue={() => setSignedIn(true)} />;
+  if (width < 850) return <MobileChatPreview />;
   return (
     <View style={{ flex: 1, backgroundColor: colors.canvas }}>
       <View style={{ flex: 1, flexDirection: "row" }}>
