@@ -1,30 +1,24 @@
 # Whilo — `ui_reference`
 
-Este diretório é a base de referência de UI/UX e produto do Whilo.
+Esta é a biblioteca canônica de referência de UI/UX, produto e features do Whilo.
 
-## O que foi pesquisado
+## Entregas
 
-- OpenAI Dots e onboarding oficial.
-- OpenAI voice agents, tools e agents.
-- Meta Muse e Muse Gadgets.
-- OpenDots, OpenBot e OpenMuse.
-- Mobbin: AI apps, onboarding, chat bot e permission screens.
-- Agentic UX, approval design e AI commerce.
+- `RESEARCH-SYNTHESIS.md`: síntese com decisões e referências.
+- `IMAGE-REFERENCE-BOARD.md`: referências visuais de Grok Bot, OpenAI Dots, Meta Muse, OpenDots, OpenBot e Mobbin.
+- `WHILO-50-ITEMS.md`: 50 itens de UI, UX, features, segurança, voice, commerce e retenção.
+- `01-*.md` a `20-*.md`: fichas individuais com fonte e decisão.
+- `reports/`: relatórios de pesquisa preservados.
+- `images/`: cópias locais das imagens selecionadas para consulta do time.
 
-Há **20 fichas de referência**, uma síntese executiva e cópias dos relatórios que conseguiram ser produzidos pelos pesquisadores.
+## Fontes
+
+Foram pesquisados OpenAI Dots, OpenAI Voice Agents, Meta Muse, Meta Muse Gadgets, OpenDots, OpenBot, OpenMuse, Mobbin AI, onboarding, chat, permissões, Agentic UX, approval UX e AI commerce.
 
 ## Mobbin
 
-O conector Mobbin não aparece habilitado na configuração desta sessão. Para não bloquear o trabalho, usei as páginas públicas do Mobbin e registrei os URLs, padrões e decisões. Não tratei thumbnails ou telas protegidas como autorização para copiar conteúdo. Se o conector Mobbin for habilitado futuramente, a próxima etapa é enriquecer cada ficha com screenshots licenciados, tags de fluxo e links de tela.
+O conector Mobbin não aparece habilitado na configuração desta sessão. Para não bloquear o trabalho, usei as páginas públicas do Mobbin e registrei URLs, padrões e decisões. Não tratei thumbnails ou telas protegidas como autorização para copiar conteúdo. Se o conector Mobbin for habilitado futuramente, a próxima etapa é enriquecer cada ficha com screenshots licenciados, tags de fluxo e links de tela.
 
-## Como usar
+## Regra de uso
 
-1. Leia `RESEARCH-SYNTHESIS.md`.
-2. Use as fichas numeradas para revisar decisões específicas.
-3. Implemente P0 antes de adicionar novos mascotes ou efeitos visuais.
-4. Para cada nova tela, registre a hipótese, o estado vazio, loading, erro, aprovação, sucesso e recuperação.
-5. Revalide com acessibilidade, mobile, teclado, screen reader e latência real.
-
-## Regra de propriedade intelectual
-
-As referências servem para aprender padrões de produto e interação. O Whilo deve manter sua própria marca, mascote, textos, componentes e identidade visual, sem reproduzir telas proprietárias pixel a pixel.
+As referências servem para aprender padrões de produto e interação. O Whilo mantém seus próprios assets, mascote, textos e sistema visual. Não copiar marca, arte, textos proprietários ou layout pixel a pixel.
