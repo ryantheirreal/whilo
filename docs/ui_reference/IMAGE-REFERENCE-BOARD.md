@@ -57,3 +57,22 @@ Referência pública [Mobbin onboarding flows](https://mobbin.com/explore/mobile
 3. O próximo passo de cada referência é uma hipótese testável, não uma cópia.
 4. Preferir componentes acessíveis, responsivos e compatíveis com teclado/screen reader.
 5. Registrar fonte, licença e decisão no PR que usar a inspiração.
+
+## Referências adicionais — operação, pricing e confiança
+
+| Asset | Fonte | Uso no Whilo |
+|---|---|---|
+| `images/saas-workspace-dashboard.png` | Dribbble / Creliq UX | Explorar dashboard de workspace, métricas e hierarquia de módulos. |
+| `images/agent-activity-feed.png` | Microsoft Learn | Estudar activity feed, estados, timestamps e supervisão. |
+| `images/agent-workspace.png` | Dribbble / AI Agent Workspace | Explorar visão de agentes, status e workload. |
+| `images/pricing-inspiration.jpg` | Dribbble search | Estudar comparação de planos, contraste e disclosure de capacidade. |
+| `images/approval-workflow.jpg` | Approval workflow reference | Estudar etapas, responsáveis e estados de aprovação. |
+| `images/computer-use-overview.webp` | Computer-use article | Comunicar computador virtual, browser e isolamento. |
+
+### Decisões derivadas
+
+- O **Activity View** deve ser um produto, não um detalhe de debug.
+- Pricing deve mostrar **capacidade incluída, consumo e limites** antes do job.
+- O computador virtual precisa exibir **domínios permitidos, arquivos acessados, custo estimado e Stop**.
+- Approval cards devem ser escaneáveis em celular e conter impacto, reversibilidade e evidência.
+- Dashboards de agentes devem priorizar saúde, pendências e intervenção, não apenas gráficos decorativos.

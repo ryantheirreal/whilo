@@ -22,3 +22,9 @@ O conector Mobbin não aparece habilitado na configuração desta sessão. Para 
 ## Regra de uso
 
 As referências servem para aprender padrões de produto e interação. O Whilo mantém seus próprios assets, mascote, textos e sistema visual. Não copiar marca, arte, textos proprietários ou layout pixel a pixel.
+
+## Expansão de produto e negócio
+
+- `WHILO-100-ITEMS.md`: catálogo expandido de 100 itens priorizáveis.
+- `../docs.agent/WHILO-BILLION-DOLLAR-FEATURE-MAP.md`: 25 features S+ com dor, público, monetização, computador virtual e fases.
+- `../docs.agent/WHILO-VIRAL-CONTENT-AND-ADS.md`: roteiros, anúncios, loops de crescimento e guardrails de claims.
