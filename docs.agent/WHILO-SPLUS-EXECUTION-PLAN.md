@@ -67,3 +67,11 @@ Só contar uma capacidade quando houver **executor real, autorização server-si
 ## Observação de plataformas
 
 Cloudflare, Vercel, GitHub e Supabase foram declarados pelo owner como conectados, mas não há configuração correspondente exposta nesta sessão. Nenhum segredo foi lido, e nenhum deploy é declarado como concluído sem evidência do ambiente.
+
+## Lote 2 — control plane S+ entregue
+
+- `apps/server/src/o1/splus-control-plane.ts` adiciona grants one-shot, HMAC webhook, inbox idempotente, readiness, métricas, export de auditoria redigido, budgets, SHA de artefatos, recovery e snapshots de segurança/deployment.
+- `apps/server/src/app.ts` expõe as rotas `/api/o1/splus/*`, headers de segurança e `X-Request-ID`.
+- `.vercelignore` mantém o deploy estático focado no PWA e exclui backend, worker, computador, submodule, testes e documentação.
+- Smoke direto validou: grant não reutilizável, webhook duplicado, budget e integridade SHA-256.
+- Limite atual: as rotas S+ são fundações reais; ainda não interceptam automaticamente todo executor legado. A integração total no ActionKernel continua sendo o próximo gate de segurança.

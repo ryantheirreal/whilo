@@ -1,0 +1,15 @@
+# Vercel publica somente o export estático de apps/mobile.
+apps/server/
+apps/worker/
+apps/computer/
+openbot/
+packages/
+tests/
+docs/
+docs.agent/
+.github/
+*.md
+*.log
+.env*
+.o1/
+artifacts/

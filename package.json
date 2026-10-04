@@ -29,7 +29,8 @@
     "test:computer": "tsx --test apps/computer/smoke.test.ts",
     "test:o1": "tsx --test apps/server/src/o1.test.ts apps/server/src/o1/*.test.ts",
     "audit:o1": "node scripts/o1-static-audit.mjs",
-    "check:o1": "pnpm audit:o1 && pnpm test:o1 && pnpm typecheck && pnpm build:server"
+    "check:o1": "pnpm audit:o1 && pnpm test:o1 && pnpm typecheck && pnpm build:server",
+    "check:splus": "pnpm exec biome check apps/server/src/o1/splus-control-plane.ts docs.agent/SPLUS-DELIVERY-01.md docs.agent/WHILO-SPLUS-EXECUTION-PLAN.md && git diff --check"
   },
   "dependencies": {
     "@ag-ui/client": "0.0.59",

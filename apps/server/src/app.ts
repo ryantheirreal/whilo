@@ -48,6 +48,7 @@ import { CreditLedger } from "./o1/credits.ts";
 import { paymentConnectionInfo } from "./o1/payments.ts";
 import { buildTravelSearch, travelPlanSchema } from "./o1/travel.ts";
 import { preparePurchase, purchaseRequestSchema } from "./o1/purchases.ts";
+import { SPlusControlPlane } from "./o1/splus-control-plane.ts";
 
 export async function createApp(
   db: Store,
@@ -56,6 +57,7 @@ export async function createApp(
 ) {
   assertApiDeploymentConfig(config);
   const audit = new O1AuditLedger(db);
+  const splus = new SPlusControlPlane(db);
   const agentRegistry = new O1AgentRegistry(db, audit);
   const handoffs = new O1HandoffService(db, audit);
   const routines = new O1RoutineService(db, audit);
@@ -103,6 +105,9 @@ export async function createApp(
     if (origin && !origins.has(origin)) return c.json({ error: "Origin is not allowed" }, 403);
     c.header("X-Content-Type-Options", "nosniff");
     c.header("Referrer-Policy", "no-referrer");
+    c.header("X-Frame-Options", "DENY");
+    c.header("Permissions-Policy", "camera=(), geolocation=(), payment=()");
+    c.header("X-Request-ID", c.req.header("x-request-id") ?? randomUUID());
     c.header("Cache-Control", "no-store");
     await next();
   });
@@ -147,12 +152,14 @@ export async function createApp(
     c.set("owner", owner);
     await next();
   });
-  app.get("/api/health", (c) =>
+  app.get("/api/health", async (c) =>
     c.json({
       ok: true,
       mode: config.mode,
       agentConfigured: agentConfigured(config),
       browserConfigured: Boolean(config.workerUrl && config.workerToken),
+      policyVersion: splus.policyVersion(),
+      readiness: await splus.readiness("system"),
     }),
   );
   let loginWindow = 0,
@@ -222,6 +229,35 @@ export async function createApp(
     return c.json({ queued: await routineDispatcher.dispatchEvent(c.get("owner"), event) });
   });
   app.get("/api/o1/audit", async (c) => { const limit = z.coerce.number().int().min(1).max(500).default(200).parse(c.req.query("limit")); return c.json(await audit.list(c.get("owner"), limit)); });
+  app.get("/api/o1/splus/capabilities", (c) => c.json(splus.capabilitySnapshot()));
+  app.get("/api/o1/splus/security", (c) => c.json(splus.securitySnapshot()));
+  app.get("/api/o1/splus/deployment", (c) => c.json(splus.deploymentSnapshot()));
+  app.get("/api/o1/splus/readiness", async (c) => c.json(await splus.readiness(c.get("owner"))));
+  app.get("/api/o1/splus/metrics", async (c) => c.json(await splus.metrics(c.get("owner"))));
+  app.get("/api/o1/splus/audit/export", async (c) => c.json(await splus.exportAudit(c.get("owner"))));
+  app.post("/api/o1/splus/grants", async (c) => {
+    const body = z.object({ actorId: z.string().trim().min(1).max(200), toolId: z.string().trim().min(1).max(200), risk: z.enum(["read", "write", "sensitive", "external", "destructive"]), target: z.string().max(500).optional(), requestHash: z.string().regex(/^[a-f0-9]{64}$/), ttlMs: z.number().int().positive().max(3_600_000).optional() }).parse(await c.req.json());
+    return c.json(await splus.issueGrant({ owner: c.get("owner"), ...body }), 201);
+  });
+  app.post("/api/o1/splus/grants/:id/claim", async (c) => {
+    const body = z.object({ actorId: z.string().min(1), toolId: z.string().min(1), requestHash: z.string().regex(/^[a-f0-9]{64}$/), target: z.string().optional() }).parse(await c.req.json());
+    return c.json(await splus.claimGrant(c.get("owner"), c.req.param("id"), body));
+  });
+  app.post("/api/o1/splus/grants/:id/revoke", async (c) => c.json(await splus.revokeGrant(c.get("owner"), c.req.param("id"))));
+  app.post("/api/o1/splus/budget/check", async (c) => c.json(await splus.budget(c.get("owner"), z.object({ scope: z.string().min(1).max(120), used: z.number().nonnegative(), limit: z.number().nonnegative() }).parse(await c.req.json()))));
+  app.post("/api/o1/splus/artifacts/verify", async (c) => {
+    const body = z.object({ content: z.string().max(10_000_000), expectedSha256: z.string().regex(/^[a-f0-9]{64}$/).optional() }).parse(await c.req.json());
+    return c.json(splus.verifyArtifact(body));
+  });
+  app.post("/api/o1/splus/recovery", async (c) => {
+    const body = z.object({ error: z.string().min(1).max(2000) }).parse(await c.req.json());
+    return c.json(splus.recovery(new Error(body.error)));
+  });
+  app.post("/api/o1/splus/webhooks/:provider", async (c) => {
+    const eventId = c.req.header("x-event-id") ?? c.req.header("idempotency-key");
+    if (!eventId) throw new AppError("x-event-id or idempotency-key is required", 422);
+    return c.json(await splus.acceptWebhook(c.get("owner"), c.req.param("provider"), eventId, await c.req.json(), c.req.header("x-whilo-signature")));
+  });
   app.get("/api/o1/command-center", async (c) => c.json(await commandCenter.snapshot(c.get("owner"))));
   app.get("/api/o1/computer-runs", async (c) => c.json(await db.list(c.get("owner"), "o1-computer-runs")));
   app.post("/api/o1/computer-use/runs/:id/resume", async (c) => {
