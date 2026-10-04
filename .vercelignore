@@ -3,7 +3,6 @@ apps/server/
 apps/worker/
 apps/computer/
 openbot/
-packages/
 tests/
 docs/
 docs.agent/
