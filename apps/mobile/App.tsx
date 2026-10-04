@@ -42,6 +42,7 @@ import { BrowserScreen, CalendarScreen, FilesScreen, MailScreen } from "./src/sc
 import { ThreadsProvider, ThreadsSheet, useMuseThread } from "./src/threads";
 import { Button, Card, colors, ErrorNotice, Field, IconButton, Mascot, s } from "./src/ui";
 import { type Detail, useWorkspace, WorkspaceContext } from "./src/workspace";
+import { PreviewApp } from "./src/preview";
 
 const nav: { id: Section; label: string; icon: LucideIcon }[] = [
   { id: "chat", label: "Chat", icon: MessageCircle },
@@ -68,6 +69,7 @@ const titles: Partial<Record<Section, { title: string; subtitle: string }>> = {
   files: { title: "Files", subtitle: "Documents, forms and filled copies." },
 };
 export default function App() {
+  if (Platform.OS === "web" && !process.env.EXPO_PUBLIC_API_URL) return <PreviewApp />;
   const [token, setToken] = useState("");
   const [accessKey, setAccessKey] = useState("");
   const [busy, setBusy] = useState(true);

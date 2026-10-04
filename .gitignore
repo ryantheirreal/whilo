@@ -11,3 +11,6 @@ apps/mobile/android/
 .DS_Store
 *.tsbuildinfo
 artifacts/
+apps/mobile/dist/web/
+apps/mobile/.expo/
+.vercel/

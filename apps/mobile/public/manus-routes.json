@@ -1,0 +1,9 @@
+{
+  "routes": [
+    { "path": "/", "title": "Whilo Preview" },
+    { "path": "/inbox", "title": "Inbox" },
+    { "path": "/tasks", "title": "Tasks" },
+    { "path": "/trips", "title": "Trips" },
+    { "path": "/automations", "title": "Automations" }
+  ]
+}
