@@ -64,6 +64,7 @@ const nav: { id: Tab; label: string; icon: typeof Activity }[] = [
 ];
 
 export function PreviewApp() {
+  const [signedIn, setSignedIn] = useState(false);
   const [tab, setTab] = useState<Tab>("overview");
   const [tasks, setTasks] = useState(tasksSeed);
   const [search, setSearch] = useState("");
@@ -98,6 +99,7 @@ export function PreviewApp() {
     setApproval(false);
     notify("Approved safely — queued for the connected workspace.");
   };
+  if (!signedIn) return <PreviewLogin onContinue={() => setSignedIn(true)} />;
   return (
     <View style={{ flex: 1, backgroundColor: colors.canvas }}>
       <View style={{ flex: 1, flexDirection: "row" }}>
@@ -930,6 +932,109 @@ function ApprovalSheet({ close, approve }: { close: () => void; approve: () => v
         </Button>
         <Button onPress={close}>Keep reviewing</Button>
       </Card>
+    </View>
+  );
+}
+
+function PreviewLogin({ onContinue }: { onContinue: () => void }) {
+  const [email, setEmail] = useState("you@example.com");
+  return (
+    <View style={{ flex: 1, backgroundColor: "#EEF7FC", flexDirection: "row" }}>
+      <View
+        style={{
+          flex: 1,
+          padding: 52,
+          justifyContent: "space-between",
+          backgroundColor: colors.blueDark,
+        }}
+      >
+        <View style={[s.row, { gap: 10 }]}>
+          <Mascot size={40} />
+          <Text style={{ color: "#FFF", fontSize: 22, fontWeight: "800" }}>Whilo</Text>
+        </View>
+        <View style={{ maxWidth: 560, gap: 18 }}>
+          <Text
+            style={{
+              color: "#FFF",
+              fontSize: 46,
+              lineHeight: 52,
+              fontWeight: "800",
+              letterSpacing: -2,
+            }}
+          >
+            A little more room to breathe.
+          </Text>
+          <Text style={{ color: "#DCECF7", fontSize: 17, lineHeight: 26 }}>
+            Your personal agent for the decisions, details and next moves that keep life moving.
+          </Text>
+          <View style={[s.row, { gap: 18, flexWrap: "wrap" }]}>
+            <Text style={{ color: "#FFF", fontWeight: "700" }}>Inbox</Text>
+            <Text style={{ color: "#FFF", fontWeight: "700" }}>Trips</Text>
+            <Text style={{ color: "#FFF", fontWeight: "700" }}>Tasks</Text>
+            <Text style={{ color: "#FFF", fontWeight: "700" }}>Automations</Text>
+          </View>
+        </View>
+        <Text style={{ color: "#DCECF7", fontSize: 12 }}>
+          Whilo Preview · Safe by default · No external action is executed
+        </Text>
+      </View>
+      <View style={{ width: 470, justifyContent: "center", padding: 42 }}>
+        <Card
+          style={{
+            padding: 30,
+            gap: 20,
+            backgroundColor: "#FFF",
+            shadowColor: "#000",
+            shadowOpacity: 0.08,
+            shadowRadius: 18,
+          }}
+        >
+          <View style={{ gap: 7 }}>
+            <Text
+              style={{ color: colors.blueDark, fontSize: 12, fontWeight: "800", letterSpacing: 1 }}
+            >
+              WELCOME BACK
+            </Text>
+            <Text
+              style={{ color: colors.text, fontSize: 29, fontWeight: "800", letterSpacing: -1 }}
+            >
+              Open your Whilo.
+            </Text>
+            <Text style={s.muted}>
+              Sign in to preview the workspace. This demo keeps everything local and safe.
+            </Text>
+          </View>
+          <View style={{ gap: 8 }}>
+            <Text style={s.label}>EMAIL</Text>
+            <TextInput
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              keyboardType="email-address"
+              style={{
+                borderWidth: 1,
+                borderColor: colors.line,
+                borderRadius: 12,
+                paddingHorizontal: 14,
+                paddingVertical: 13,
+                color: colors.text,
+              }}
+            />
+          </View>
+          <Button primary onPress={onContinue} icon={ArrowRight}>
+            Continue to Preview
+          </Button>
+          <Pressable onPress={onContinue} style={{ alignItems: "center", padding: 8 }}>
+            <Text style={[s.small, { color: colors.blueDark, fontWeight: "700" }]}>
+              Continue as demo user
+            </Text>
+          </Pressable>
+          <View style={[s.row, { gap: 8, justifyContent: "center" }]}>
+            <ShieldCheck size={14} color="#43815E" />
+            <Text style={s.small}>No card · no email sent · no booking made</Text>
+          </View>
+        </Card>
+      </View>
     </View>
   );
 }
