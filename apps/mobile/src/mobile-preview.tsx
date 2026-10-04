@@ -13,8 +13,10 @@ import {
   Plus,
   Send,
   ShieldCheck,
+  Square,
+  X,
 } from "lucide-react-native";
-import { useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { Button, Card, colors, Mascot, s } from "./ui";
 
@@ -35,6 +37,7 @@ type Message = {
   tool?: "mail" | "travel" | "purchase";
 };
 type Session = { id: string; title: string; agentId: string; messages: Message[] };
+type PendingTurn = { sessionId: string; text: string };
 
 const agents: Agent[] = [
   {
@@ -107,6 +110,10 @@ export function MobileChatPreview() {
   const [agentPicker, setAgentPicker] = useState(false);
   const [call, setCall] = useState(false);
   const [toast, setToast] = useState("");
+  const [pending, setPending] = useState<PendingTurn | null>(null);
+  const [queue, setQueue] = useState<PendingTurn[]>([]);
+  const [review, setReview] = useState<Message["tool"] | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const session = sessions.find((x) => x.id === selectedId) || sessions[0];
   const agent = agents.find((x) => x.id === agentId) || agents[0];
   const activeMessages = session.messages;
@@ -190,15 +197,47 @@ export function MobileChatPreview() {
       time: "now",
     };
   };
+  const runReply = (text: string, sessionId: string) => {
+    setPending({ sessionId, text });
+    timer.current = setTimeout(() => {
+      const reply = answerFor(text);
+      setSessions((old) =>
+        old.map((x) => (x.id === sessionId ? { ...x, messages: [...x.messages, reply] } : x)),
+      );
+      setPending(null);
+    }, 720);
+  };
+  useEffect(() => {
+    if (pending || queue.length === 0) return;
+    const next = queue[0];
+    setQueue((old) => old.slice(1));
+    runReply(next.text, next.sessionId);
+  }, [pending, queue]);
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+    },
+    [],
+  );
+  const stop = () => {
+    if (timer.current) clearTimeout(timer.current);
+    setPending(null);
+    notify("Turn stopped safely");
+  };
   const send = (value = draft) => {
     const text = value.trim();
     if (!text) return;
     const user: Message = { id: `u-${Date.now()}`, from: "user", text, time: "now" };
-    const reply = answerFor(text);
     setSessions((old) =>
-      old.map((x) => (x.id === selectedId ? { ...x, messages: [...x.messages, user, reply] } : x)),
+      old.map((x) => (x.id === selectedId ? { ...x, messages: [...x.messages, user] } : x)),
     );
     setDraft("");
+    if (pending) {
+      setQueue((old) => [...old, { sessionId: selectedId, text }]);
+      notify("Added to the conversation queue");
+      return;
+    }
+    runReply(text, selectedId);
   };
   const quick = (text: string) => send(text);
   return (
@@ -271,8 +310,30 @@ export function MobileChatPreview() {
             <Text style={s.small}>{agent.role} · this conversation is private to this session</Text>
           </View>
           {activeMessages.map((message) => (
-            <MessageBubble key={message.id} message={message} onAction={notify} />
+            <MessageBubble
+              key={message.id}
+              message={message}
+              onAction={(action) => {
+                if (message.tool) setReview(message.tool);
+                else notify(action);
+              }}
+            />
           ))}
+          {pending?.sessionId === selectedId ? (
+            <ThinkingBubble text={pending.text} onStop={stop} />
+          ) : null}
+          {queue
+            .filter((item) => item.sessionId === selectedId)
+            .map((item, index) => (
+              <View
+                key={`${item.sessionId}-${index}`}
+                style={{ alignSelf: "flex-end", maxWidth: "88%" }}
+              >
+                <Text style={{ color: colors.muted, fontSize: 11, textAlign: "right" }}>
+                  Queued · {item.text}
+                </Text>
+              </View>
+            ))}
           <View style={{ gap: 8, marginTop: 8 }}>
             <Text style={[s.small, { fontWeight: "800", color: colors.muted }]}>TRY ASKING</Text>
             <View style={[s.row, { gap: 8, flexWrap: "wrap" }]}>
@@ -337,7 +398,22 @@ export function MobileChatPreview() {
             <Pressable onPress={() => setCall(true)} style={s.iconBox}>
               <Mic size={18} color={colors.muted} />
             </Pressable>
-            {draft.trim() ? (
+            {pending ? (
+              <Pressable
+                onPress={stop}
+                accessibilityLabel="Stop agent turn"
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
+                  backgroundColor: "#E86363",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Square size={15} color="#FFF" fill="#FFF" />
+              </Pressable>
+            ) : draft.trim() ? (
               <Pressable
                 onPress={() => send()}
                 style={{
@@ -385,6 +461,7 @@ export function MobileChatPreview() {
         />
       )}
       {call && <CallSheet agent={agent} close={() => setCall(false)} />}
+      {review && <ReviewSheet tool={review} close={() => setReview(null)} notify={notify} />}
       {toast ? (
         <View
           style={{
@@ -459,6 +536,103 @@ function MessageBubble({ message, onAction }: { message: Message; onAction: (x: 
           onAction={onAction}
         />
       )}
+    </View>
+  );
+}
+function ThinkingBubble({ text, onStop }: { text: string; onStop: () => void }) {
+  return (
+    <View style={{ alignSelf: "flex-start", maxWidth: "88%", gap: 8 }}>
+      <View
+        style={{
+          backgroundColor: "#F0F3F5",
+          paddingHorizontal: 15,
+          paddingVertical: 12,
+          borderRadius: 20,
+        }}
+      >
+        <View style={[s.row, { gap: 8 }]}>
+          <View
+            style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: colors.blueDark }}
+          />
+          <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: "#7AA9C4" }} />
+          <View style={{ width: 7, height: 7, borderRadius: 4, backgroundColor: "#B8CBD6" }} />
+          <Text style={{ color: colors.muted, fontSize: 12 }}>Working on “{text}”</Text>
+        </View>
+      </View>
+      <Pressable onPress={onStop} style={{ alignSelf: "flex-start" }}>
+        <Text style={{ color: "#C25757", fontSize: 11, fontWeight: "800" }}>Stop this turn</Text>
+      </Pressable>
+    </View>
+  );
+}
+function ReviewSheet({
+  tool,
+  close,
+  notify,
+}: {
+  tool: NonNullable<Message["tool"]>;
+  close: () => void;
+  notify: (message: string) => void;
+}) {
+  const copy = {
+    mail: {
+      title: "Review email",
+      detail:
+        "To: alex@example.com\nSubject: Your Whilo update\n\nThe exact draft is ready. Nothing is sent until you approve the final content.",
+    },
+    travel: {
+      title: "Review trip comparison",
+      detail:
+        "Lisboa · 3 sourced options\n\nCompare price, flexibility and friction. Booking remains a human-only step.",
+    },
+    purchase: {
+      title: "Review purchase handoff",
+      detail:
+        "Merchant: Example Store\nTotal: R$ 3.480\n\nThe agent can open checkout, but never enters payment data or submits the order.",
+    },
+  }[tool];
+  return (
+    <View
+      style={{
+        position: "absolute",
+        inset: 0,
+        backgroundColor: "rgba(12,24,34,.38)",
+        justifyContent: "flex-end",
+      }}
+    >
+      <View
+        style={{
+          backgroundColor: "#FFF",
+          borderTopLeftRadius: 26,
+          borderTopRightRadius: 26,
+          padding: 22,
+          gap: 16,
+        }}
+      >
+        <View style={s.between}>
+          <Text style={{ fontSize: 20, fontWeight: "800", color: colors.text }}>{copy.title}</Text>
+          <Pressable onPress={close}>
+            <X size={20} color={colors.muted} />
+          </Pressable>
+        </View>
+        <Text style={{ color: colors.text, lineHeight: 23 }}>{copy.detail}</Text>
+        <View style={[s.row, { gap: 9 }]}>
+          <ShieldCheck size={17} color="#43815E" />
+          <Text style={[s.small, { flex: 1 }]}>
+            This approval applies only to the details shown above.
+          </Text>
+        </View>
+        <Button
+          primary
+          onPress={() => {
+            close();
+            notify("Review recorded — external execution remains gated");
+          }}
+        >
+          Approve this review
+        </Button>
+        <Button onPress={close}>Keep reviewing</Button>
+      </View>
     </View>
   );
 }
