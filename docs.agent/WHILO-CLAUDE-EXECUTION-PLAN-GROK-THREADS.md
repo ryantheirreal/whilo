@@ -668,3 +668,421 @@ Todo vídeo deve mostrar pelo menos um controle real de confiança e usar dados 
 **Critério de aceite:** cada job tem caminho claro de proposta, aprovação, execução/limite e resultado, com feedback qualitativo e custo conhecido.
 
 **Risco/benefício:** reduz escopo e revela qual thread merece investimento antes de criar marketplace, dezenas de pets ou pricing complexo.
+
+
+---
+
+# Anexo A — 50 itens adicionais de produto, UI/UX e escala
+
+Estes itens continuam a numeração do catálogo anterior. O Claude deve tratá-los como backlog priorizado, não como ordem automática de implementação.
+
+## 101–110 — presença, identidade e navegação
+
+101. Avatar com estado de presença textual e não apenas halo colorido.
+102. Preview de thread com última ação útil, não apenas última frase.
+103. Badge separado para unread, aprovação e erro.
+104. Indicador de que uma thread tem artefato novo.
+105. Favoritar agent thread sem alterar ordenação de risco.
+106. Fixar até três threads no topo com etiqueta “fixada”.
+107. Agrupar threads por “agora”, “hoje” e “anteriores”.
+108. Mute por thread com quiet hours configuráveis.
+109. Archive com restauração e confirmação não destrutiva.
+110. Empty state da sidebar com um job seguro de demonstração.
+
+## 111–120 — pet threads e personalidade controlada
+
+111. Página de perfil do agent com função, capabilities e limites.
+112. Preview de ferramentas que cada agent pode usar.
+113. Indicador de autonomia: pesquisar, preparar, aprovar, executar.
+114. Nome do agent editável sem perder identidade técnica.
+115. Descrição de personalidade separada de política de segurança.
+116. Tom selecionável com presets de voz e escrita.
+117. Agent status page com jobs ativos e últimos receipts.
+118. Handoff explícito entre pets com contexto visível.
+119. “Ask another agent” que cria uma subtask rastreável.
+120. Desativar agent sem apagar histórico.
+
+## 121–130 — conversa de alta qualidade
+
+121. Resumo automático fixado após 20 mensagens.
+122. Jump-to-unread dentro da thread.
+123. Busca local por mensagem, tool, fonte ou receipt.
+124. Filtro “somente decisões” e “somente pendências”.
+125. Resposta citada com referência à mensagem original.
+126. Editar e reenviar pedido sem duplicar side effect.
+127. Retry somente de etapa segura e explicitamente nomeada.
+128. Copiar resultado sem copiar secrets/redacted fields.
+129. Exportar thread para Markdown, JSON e PDF.
+130. Renomear thread com title generated + title custom.
+
+## 131–140 — atividade, evidência e aprovação
+
+131. Timeline compacta e detalhada para o mesmo run.
+132. Diff do plano antes e depois da aprovação.
+133. Evidência por tool com fonte, timestamp e origem.
+134. Visão de dependências entre etapas.
+135. Histórico de quem aprovou, quando e com qual versão de policy.
+136. Expiração visível de approval grant.
+137. Approval delegation com escopo e validade.
+138. Rejeição com motivo opcional e aprendizagem de preferência.
+139. “Why paused?” explicado em linguagem humana.
+140. Incident card quando o resultado é `outcome_unknown`.
+
+## 141–150 — escala, receita e operação
+
+141. Usage meter por messages, jobs, connectors e compute.
+142. Prévia de custo antes de iniciar Virtual Computer.
+143. Limite mensal configurável por workspace.
+144. Alertas de orçamento em 50%, 80% e 100%.
+145. Invoice/receipt de consumo compreensível.
+146. Trial baseado em primeiro job concluído.
+147. Template gallery com qualidade, autor e última atualização.
+148. Duplicar template em modo sandbox antes de conectar apps.
+149. Share card com redaction e link expirável.
+150. Painel de ROI baseado em eventos reais, com metodologia visível.
+
+### Critério de priorização do Anexo A
+
+Marcar cada item como `P0`, `P1` ou `P2` usando: risco de segurança, frequência da dor, valor de retenção, disposição a pagar, efeito de distribuição e custo de implementação. Itens 101–120 são a base da nova navegação; itens 131–140 não podem ser tratados como polish, pois sustentam confiança.
+
+---
+
+# Anexo B — 20 features Tier S adicionais
+
+## S1 — Thread OS
+
+**Problema:** conversas, jobs e artefatos ficam separados em superfícies diferentes.
+
+**Entrega:** transformar cada thread em um objeto de trabalho com mensagens, activity events, approvals, artifacts e receipts.
+
+**Público:** qualquer usuário; especialmente profissionais com tarefas recorrentes.
+
+**Monetização:** incluída no Pro; retenção como principal KPI.
+
+**Aceite:** reload, busca e export preservam todos os eventos e estados sem duplicação.
+
+## S2 — Agent Identity Graph
+
+**Problema:** o usuário não sabe qual agent pode fazer o quê.
+
+**Entrega:** página de capabilities, connectors, autonomia, risco e histórico por agent.
+
+**Público:** power users, famílias e equipes.
+
+**Monetização:** Team/Business para governança por workspace.
+
+**Aceite:** nenhuma capability aparece sem executor e escopo server-side verificados.
+
+## S3 — Pet Thread Router
+
+**Problema:** escolher o agent certo exige trocar de tela ou entender arquitetura interna.
+
+**Entrega:** roteamento por intenção, com confirmação do agent escolhido e possibilidade de handoff.
+
+**Público:** iniciantes e usuários com muitos agents.
+
+**Monetização:** Pro/Team; reduz abandono no primeiro job.
+
+**Aceite:** o usuário vê “por que Atlas foi escolhido” e pode trocar antes de executar.
+
+## S4 — Approval Inbox
+
+**Problema:** aprovação importante se perde no chat.
+
+**Entrega:** fila global, ordenada por risco, custo, expiração e impacto.
+
+**Público:** consumidores, cuidadores, operadores e equipes.
+
+**Monetização:** Team/Business e feature de confiança do Pro.
+
+**Aceite:** abrir a fila leva ao ponto exato da thread e ao payload imutável.
+
+## S5 — Run Replay Seguro
+
+**Problema:** debugging e confiança ficam difíceis quando uma etapa falha.
+
+**Entrega:** replay somente de etapas read-only ou explicitamente reautorizadas, com diff.
+
+**Público:** operadores, developers e suporte.
+
+**Monetização:** Business/API.
+
+**Aceite:** replay não reutiliza grant externo nem repete side effect sem nova aprovação.
+
+## S6 — Outcome Unknown Resolver
+
+**Problema:** timeout após provider deixa o usuário sem saber se algo ocorreu.
+
+**Entrega:** fluxo de reconciliação, consulta de estado e intervenção humana.
+
+**Público:** commerce, travel, email e SMBs.
+
+**Monetização:** camada de confiança Business.
+
+**Aceite:** nunca existe retry automático de um side effect em estado incerto.
+
+## S7 — Safe Virtual Computer
+
+**Problema:** algumas tarefas exigem browser, mas o usuário não vê o perímetro de risco.
+
+**Entrega:** VM efêmera com allowlist, snapshot, custo estimado, tempo máximo, Stop e receipt.
+
+**Público:** Pro users, agencies, SMBs e developers.
+
+**Monetização:** créditos de compute, VM persistente e pool de equipe.
+
+**Aceite:** job começa somente após grant; custo e domínios são exibidos antes.
+
+## S8 — Personal Context Vault
+
+**Problema:** contexto útil está espalhado e permissões são opacas.
+
+**Entrega:** memória inspectável por fonte, data, expiração e escopo.
+
+**Público:** famílias, profissionais e power users.
+
+**Monetização:** storage/privacy tier.
+
+**Aceite:** usuário consegue ver, editar, exportar e apagar uma memória sem efeito colateral oculto.
+
+## S9 — Family Privacy Mesh
+
+**Problema:** espaços compartilhados expõem conversas privadas.
+
+**Entrega:** roles e boundaries entre membro, Space, thread, document e approval.
+
+**Público:** famílias, cuidadores e coabitantes.
+
+**Monetização:** Family subscription.
+
+**Aceite:** convite dá somente o escopo previsto e testes cross-member passam.
+
+## S10 — Meeting-to-Job Compiler
+
+**Problema:** decisões de reunião não viram execução.
+
+**Entrega:** transcript → decisions → owners → drafts → approval → task events.
+
+**Público:** equipes remotas, consultorias, vendas e operações.
+
+**Monetização:** per-seat Team.
+
+**Aceite:** cada tarefa possui owner, source, due date, confidence e opção de editar antes de enviar.
+
+## S11 — Evidence Graph
+
+**Problema:** respostas parecem certas, mas a origem é difícil de rastrear.
+
+**Entrega:** grafo de afirmação, fonte, ferramenta, timestamp e artifact.
+
+**Público:** pesquisa, educação, operações e empresas.
+
+**Monetização:** Business/API.
+
+**Aceite:** abrir uma afirmação leva à evidência e informa quando ela está ausente.
+
+## S12 — Connector Health Plane
+
+**Problema:** connector quebrado parece erro do agente.
+
+**Entrega:** health, scopes, latency, last success, revoke e fallback por connector.
+
+**Público:** todos; especialmente admins.
+
+**Monetização:** Team/Business.
+
+**Aceite:** a UI diferencia auth expired, provider down, policy denied e agent error.
+
+## S13 — Template Marketplace Governado
+
+**Problema:** usuários não sabem como começar e templates podem ser inseguros.
+
+**Entrega:** templates versionados com autor, capabilities, scopes, evals e sandbox.
+
+**Público:** creators, SMBs e teams.
+
+**Monetização:** revenue share, marketplace fee e templates premium.
+
+**Aceite:** template não ativa connector automaticamente e mostra changelog de permissões.
+
+## S14 — Agent Evaluation Lab
+
+**Problema:** agents parecem bons em demo e falham em jobs reais.
+
+**Entrega:** dataset sintético, casos adversariais, taxa de sucesso, custo e regressão por versão.
+
+**Público:** Whilo team, builders e enterprise.
+
+**Monetização:** Builder/API/Enterprise.
+
+**Aceite:** nenhuma versão vai para produção sem passar evals críticos e gates de risco.
+
+## S15 — Proactive Radar com Quiet Hours
+
+**Problema:** valor se perde quando o usuário precisa perguntar tudo, mas notificações excessivas cansam.
+
+**Entrega:** alertas opt-in por threshold, prioridade, quiet hours e digest.
+
+**Público:** famílias, sales, finance ops e profissionais.
+
+**Monetização:** Pro/Business.
+
+**Aceite:** cada alerta mostra motivo, fonte, ação possível e como desligar.
+
+## S16 — Accessibility Voice Layer
+
+**Problema:** interfaces e formulários excluem pessoas com limitações motoras/visuais.
+
+**Entrega:** voice navigation, captions, leitura de status, confirmation gates e fallback humano.
+
+**Público:** pessoas com deficiência, idosos e caregivers.
+
+**Monetização:** Pro com preço acessível e instituições.
+
+**Aceite:** usuário pode completar um job não sensível por voz e revisar texto antes do envio.
+
+## S17 — Whilo OS API Governada
+
+**Problema:** outras aplicações querem ações e approvals sem construir um control plane.
+
+**Entrega:** API de threads, grants, events, approvals, receipts e webhooks assinados.
+
+**Público:** SaaS, marketplaces, travel, finance admin e developers.
+
+**Monetização:** API calls, enterprise contract e compute.
+
+**Aceite:** toda request tem tenant, actor, idempotency, policy version e audit event.
+
+## S18 — Embedded Approval SDK
+
+**Problema:** parceiros precisam de revisão humana consistente dentro de seus próprios apps.
+
+**Entrega:** componente/SDK de review com payload hash, scopes, expiration, approve/reject e receipt.
+
+**Público:** SaaS e plataformas com automação.
+
+**Monetização:** platform fee e volume.
+
+**Aceite:** SDK não expõe segredo, não aceita callback não assinado e mantém correlação de run.
+
+## S19 — Compute Economics Engine
+
+**Problema:** jobs com browser/model/VM podem consumir mais do que o preço suporta.
+
+**Entrega:** estimate antes do job, budgets, routing por custo/latência e chargeback por workspace.
+
+**Público:** Pro, teams, agencies e enterprise.
+
+**Monetização:** margem de compute e planos por capacidade.
+
+**Aceite:** nenhum job ultrapassa budget sem nova aprovação explícita.
+
+## S20 — Trust and Reliability Scorecard
+
+**Problema:** “segurança” é uma promessa abstrata e não comparável.
+
+**Entrega:** scorecard visível por agent, connector e job: success, unknown, rollback, approval, latency, evidence coverage.
+
+**Público:** usuários avançados, admins e compradores B2B.
+
+**Monetização:** Business/Enterprise.
+
+**Aceite:** métricas derivam de eventos reais, têm janela temporal e não podem ser infladas por capability flags.
+
+---
+
+# Anexo C — ordem de execução ampliada
+
+## P0 — confiança antes da estética
+
+1. Thread/Event/Approval/Receipt model.
+2. ActionKernel em todos os executors.
+3. Identity asset contract.
+4. Semantic tokens e locale pt-BR.
+5. Approval Inbox e outcome_unknown.
+6. Testes de concorrência, reload e cross-tenant.
+
+## P1 — experiência que prova valor
+
+7. Pet Thread Router.
+8. Sidebar responsiva.
+9. Thread Header e Run Timeline.
+10. Inbox Zero Governado.
+11. Meeting-to-Job Compiler.
+12. Travel Recovery em modo preparado.
+13. Safe Virtual Computer com custo e Stop.
+14. Voice na mesma thread.
+15. Personal Context Vault.
+
+## P2 — plataforma e distribuição
+
+16. Agent Evaluation Lab.
+17. Template Marketplace.
+18. Connector Health Plane.
+19. Embedded Approval SDK.
+20. Whilo OS API.
+21. Compute Economics Engine.
+22. Trust Scorecard.
+23. Family Privacy Mesh.
+24. Evidence Graph.
+25. Proactive Radar.
+
+### Regra de saída de cada fase
+
+- **P0:** nenhum efeito externo fora de grant/claim e nenhum estado ambíguo escondido.
+- **P1:** três jobs úteis chegam a resultado verificável com usuários de teste.
+- **P2:** terceiros conseguem integrar, avaliar e monetizar um job governado sem quebrar o modelo de segurança.
+
+---
+
+# Anexo D — novas recomendações pós-output
+
+### 1. P0 — não lançar a “pet UI” sem provar a fonte de verdade
+
+**Problema:** ícones e threads podem parecer completos mesmo com dados locais.
+
+**Ação:** ligar cada row a Agent/Thread/Event persistidos ou marcar explicitamente o estado Demo.
+
+**Critério de aceite:** cada badge, preview e status possui origem verificável.
+
+**Risco/benefício:** evita uma UI viral que quebra na primeira atualização.
+
+### 2. P0 — limitar a primeira demonstração a três jobs
+
+**Problema:** 50 itens e 20 features podem diluir o foco.
+
+**Ação:** escolher Inbox, Travel Recovery e Safe Virtual Computer como golden paths.
+
+**Critério de aceite:** cada caminho tem vídeo, teste, receipt e métrica.
+
+**Risco/benefício:** reduz superfície e aumenta a chance de um resultado premium.
+
+### 3. P1 — construir a sidebar com feature flags
+
+**Problema:** a navegação nova pode interromper o Preview existente.
+
+**Ação:** habilitar desktop sidebar, tablet rail e mobile drawer gradualmente.
+
+**Critério de aceite:** fallback para layout anterior e comparação de métricas sem perda de sessão.
+
+**Risco/benefício:** rollout reversível e menor risco de regressão.
+
+### 4. P1 — transformar os pets em capabilities explicáveis
+
+**Problema:** personalidade visual pode criar promessa falsa.
+
+**Ação:** cada pet exibe papel, ferramentas, limites, autonomia e último receipt.
+
+**Critério de aceite:** usuário consegue prever o que o pet pode fazer antes de enviar uma intenção.
+
+**Risco/benefício:** diferencia mascote de marketing de agent confiável.
+
+### 5. P1 — criar a matriz de economics antes da VM persistente
+
+**Problema:** computadores virtuais podem destruir margem e surpreender usuários.
+
+**Ação:** medir custo por job, tempo, provider, egress, storage e taxa de sucesso antes de vender capacidade reservada.
+
+**Critério de aceite:** cada plano tem limite, estimate, budget stop e margem alvo documentados.
+
+**Risco/benefício:** protege o modelo de assinatura e torna o compute vendável de forma transparente.
